@@ -4,8 +4,10 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +18,7 @@ import androidx.compose.foundation.text.KeyboardOptions.Companion.Default
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -24,9 +27,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.alarmmanager_demo.ui.theme.AlarmManagerDemoTheme
 
 class MainActivity : ComponentActivity() {
@@ -36,46 +43,67 @@ class MainActivity : ComponentActivity() {
         setContent {
             AlarmManagerDemoTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    var alarmItem by remember {
-                        mutableStateOf(AlarmItem())
-                    }
-                    var context = LocalContext.current
-                    Column(
-                        Modifier.padding(20.dp),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        TextField(
-                            value = alarmItem.timeToString(),
-                            onValueChange = { newTime ->
-                                alarmItem = alarmItem.copy().apply {
-                                    stringToTime(newTime)
-                                }
-                            },
-                            label = { Text(text = "Time in minutes") },
-                            placeholder = { Text(text = "Enter time in minutes") },
-                            keyboardOptions = Default.copy(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number),
-                            modifier = Modifier.fillMaxWidth()
-                        )
 
-                        Spacer(modifier = Modifier.height(16.dp))
-                        TextField(
-                            value = alarmItem.message,
-                            onValueChange = { alarmItem = alarmItem.copy(message = it) },
-                            label = { Text(text = "Message") },
-                            placeholder = { Text(text = "Enter your message") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Button(
-                            onClick = { startAlarm(alarmItem, context) },
-                            modifier = Modifier.fillMaxWidth()
+                Scaffold(
+                    topBar = {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(color = MaterialTheme.colorScheme.primary)
+                                .padding(12.dp), contentAlignment = Alignment.Center
                         ) {
-                            Text(text = "Click to Start Alarm")
+                            Text(
+                                text = "Alarm Manager Demo",
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                        }
+                    }
+                ) {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(it),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        var alarmItem by remember {
+                            mutableStateOf(AlarmItem())
+                        }
+                        var context = LocalContext.current
+                        Column(
+                            Modifier.padding(20.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            TextField(
+                                value = alarmItem.timeToString(),
+                                onValueChange = { newTime ->
+                                    alarmItem = alarmItem.copy().apply {
+                                        stringToTime(newTime)
+                                    }
+                                },
+                                label = { Text(text = "Time in minutes") },
+                                placeholder = { Text(text = "Enter time in minutes") },
+                                keyboardOptions = Default.copy(keyboardType = KeyboardType.Number),
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            Spacer(modifier = Modifier.height(16.dp))
+                            TextField(
+                                value = alarmItem.message,
+                                onValueChange = { alarmItem = alarmItem.copy(message = it) },
+                                label = { Text(text = "Message") },
+                                placeholder = { Text(text = "Enter your message") },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Button(
+                                onClick = { startAlarm(alarmItem, context) },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(text = "Click to Start Alarm")
+                            }
                         }
                     }
                 }
